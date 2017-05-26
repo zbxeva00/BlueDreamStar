@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bluedreamstar.core.dao.IUserOperationDao">
+	
+	<resultMap type="UserBasisMessagePo" id="resultListUserBasisMessage">
+		<id column="id" property="id" />
+		<result column="username" property="userName" />
+		<result column="password" property="password" />
+		<result column="nickname" property="nickName" />
+		<result column="yxbz" property="yxbz" />
+	</resultMap>
+	
+	<!-- 根据用户名获取用户基础信息 -->
+	<select id="selectUserBasisMessageByUserName" parameterType="String" resultMap="resultListUserBasisMessage">
+		select * from user_basismessage t where t.username = #{userName}
+	</select>
+	
+</mapper>

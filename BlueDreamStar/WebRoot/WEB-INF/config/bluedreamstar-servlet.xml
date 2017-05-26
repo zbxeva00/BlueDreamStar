@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  xmlns:tx="http://www.springframework.org/schema/tx"
+	  xmlns:aop="http://www.springframework.org/schema/aop"
+	  xmlns:context="http://www.springframework.org/schema/context"
+	  xmlns:mvc="http://www.springframework.org/schema/mvc"
+	  xsi:schemaLocation="http://www.springframework.org/schema/beans
+	                      http://www.springframework.org/schema/beans/spring-beans.xsd
+	                      http://www.springframework.org/schema/context
+	                      http://www.springframework.org/schema/context/spring-context.xsd
+	                      http://www.springframework.org/schema/mvc
+	                      http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<!-- 启用spring mvc 注解 -->
+	<mvc:annotation-driven>
+	</mvc:annotation-driven>
+	
+	<!-- 自动扫描的包名，使用Spring支持自动检测组件，如注解的Controller -->
+	<context:component-scan base-package="com.bluedreamstar.core.web.controller" />
+	<context:component-scan base-package="com.bluedreamstar.core.dao" />
+
+	<!-- 视图解析器：定义跳转的文件的前后缀(JSP) -->
+	<bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/PAGE/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	<!-- 配置json -->
+	<bean id="mappingJacksonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+	
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="mappingJacksonHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 配置拦截器，多个拦截器按顺序执行 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/*.do" />
+			<bean class="com.bluedreamstar.core.interceptor.SessionInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+</beans>

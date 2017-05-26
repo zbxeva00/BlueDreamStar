@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	                      http://www.springframework.org/schema/beans/spring-beans.xsd
+	                      http://www.springframework.org/schema/tx
+	                      http://www.springframework.org/schema/tx/spring-tx.xsd
+	                      http://www.springframework.org/schema/aop
+	                      http://www.springframework.org/schema/aop/spring-aop.xsd
+	                      http://mybatis.org/schema/mybatis-spring
+	                      http://mybatis.org/schema/mybatis-spring.xsd
+	                      http://www.springframework.org/schema/context
+	                      http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 自动扫描的包名，使用Spring支持自动检测组件，如注解的Controller -->
+	<context:component-scan base-package="com.bluedreamstar.core.service" />
+
+	<!-- 引入属性文件 -->
+	<context:property-placeholder location="classpath:db.properties" />
+
+	<!-- 数据库连接 -->
+	<bean id="coreds" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.bt.driver}" />
+		<property name="url" value="${jdbc.bt.url}" />
+		<property name="username" value="${jdbc.bt.username}" />
+		<property name="password" value="${jdbc.bt.password}" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testWhileIdle" value="true" />
+		<!-- 连接池启动时的初始值 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池的最大值 -->
+		<property name="maxActive" value="100" />
+		<!-- 最大空闲值.当经过一个高峰时间后，连接池可以慢慢将已经用不到的连接慢慢释放一部分，一直减少到maxIdle为止 -->
+		<property name="maxIdle" value="50" />
+		<!-- 最小空闲值.当空闲的连接数少于阀值时，连接池就会预申请去一些连接，以免洪峰来时来不及申请 -->
+		<property name="minIdle" value="10" />
+		<!--#给出一条简单的sql语句进行验证 -->
+		<property name="validationQuery" value="select getdate()" />
+		<!--#在取出连接时进行有效验证 -->
+		<property name="removeAbandonedTimeout" value="120" />
+		<property name="removeAbandoned" value="true" />
+		<!-- #运行判断连接超时任务的时间间隔，单位为毫秒，默认为-1，即不执行任务。 -->
+		<property name="timeBetweenEvictionRunsMillis" value="3600000" />
+		<!-- #连接的超时时间，默认为半小时。 -->
+		<property name="minEvictableIdleTimeMillis" value="3600000" />
+	</bean>
+	
+	<!-- 事务管理 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="coreds" />
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<aop:aspectj-autoproxy expose-proxy="true" />
+	
+	<!-- mybatis配置 -->
+	<bean id="sqlSessionFactoryCore" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="coreds" />
+		<property name="typeAliasesPackage" value="com.bluedreamstar.core.po" />
+	</bean>
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.bluedreamstar.core.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryCore" />
+	</bean>
+
+</beans>
