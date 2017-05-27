@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<!-- 让 IE 浏览器运行最新的渲染模式 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- 默认采用高速模式渲染页面（不是所有双模式浏览器都支持） -->
+<meta name="renderer" content="webkit">
+<!-- 响应式布局 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>BLUEDREAMSTAR</title>
+<link href="JS/bootstrap-3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<style type="text/css">
+	body { padding-top: 50px; }
+</style>
+<script src="JS/jquery-3.2.1.min.js"></script>
+<script src="JS/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	
+	//页面初始化
+	$(document).ready(function(){
+		createEvent();
+		$("#userinfo").text("");
+		$("#userinfo").hide();
+		$("#logoutbtn").hide();
+		sessionValidation();
+	});
+	
+	//获取登录状态
+	function sessionValidation(){
+		var url='./userOperationController_sessionValidation.do';
+		$.ajax({
+			url:url,
+			type:'POST',
+			dataType:'json',
+			cache:false,
+			async:false,
+			success:function(data) {
+				loginInfostate(data);
+			},
+			error:function(){
+				loginInfostate(null);
+			}
+		});
+	}
+	
+	//显示登录状态
+	function loginInfostate(data){
+		if (data == null || data.sessionValidationFlag != "true") {
+			$("#loginEditDiv").show();
+			$("#loginbtn").show();
+			$("#signinbtn").show();
+			$("#userinfo").text("");
+			$("#userinfo").hide();
+			$("#logoutbtn").hide();
+		} else {
+			$("#loginEditDiv").hide();
+			$("#loginbtn").hide();
+			$("#signinbtn").hide();
+			$("#userinfo").text("欢迎 " + data.userNickName);
+			$("#userinfo").show();
+			$("#logoutbtn").show();
+		}
+	}
+	
+	//绑定按钮事件
+	function createEvent(){
+		$("#loginbtn").click(function(){
+			var username = $("#username").val();
+			var password = $("#password").val();
+			
+			var obj = {};
+			obj.username = username;
+			obj.password = password;
+			var url='./userOperationController_userLogin.do';
+			$.ajax({
+				url:url,
+				type:'POST',
+				dataType:'json',
+				data:obj,
+				cache:false,
+				async:false,
+				success:function(data) {
+					if (data.loginFlag == "true") {
+						window.location.href = "./userOperationController_jumpToIndex.do";
+					} else {
+						showLoginErrorModalPage(data.loginMessage);
+					}
+				},
+				error:function(){
+					showLoginErrorModalPage("系统异常！");
+				}
+			});
+		});
+		
+		$("#logoutbtn").click(function(){
+			window.location.href = "./userOperationController_userLogout.do";
+		});
+	}
+	
+	//显示登陆失败详细信息
+	function showLoginErrorModalPage(errorMessage){
+		$("#loginError").find("p").text(errorMessage);
+		$("#loginError").modal("show");
+	}
+</script>
+</head>
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="./userOperationController_jumpToIndex.do">BLUEDREAMSTAR</a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+		        	<li><a href="javascript:void(0)"><span class="glyphicon glyphicon-film" title="Video"></span></a></li>
+		      	</ul>
+				<form class="navbar-form navbar-right" role="search">
+					<div id="loginEditDiv" class="form-group">
+						<input id="username" type="text" class="form-control input-sm" placeholder="用户登录名">
+						<input id="password" type="password" class="form-control input-sm" placeholder="用户登录密码">
+					</div>
+					<button id="loginbtn" type="button" class="btn btn-primary btn-sm">登录</button>
+					<button id="signinbtn" type="button" class="btn btn-default btn-sm">注册</button>
+					<div id="userinfo" class="form-group" style="color:#FFFFFF"></div>&nbsp;&nbsp;&nbsp;
+					<button id="logoutbtn" type="button" class="btn btn-danger btn-sm">登出</button>
+				</form>
+			</div>
+		</div>
+	</nav>
+	<div class="modal fade" style="top: 20%;" id="loginError" tabindex="-1" role="dialog" aria-labelledby="loginErrorLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog" style="width: 30%">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="loginModalLabel">登录失败</h4>
+				</div>
+				<div class="modal-body">
+					<p></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="jumbotron">
+		<div class="container">
+			<h1>欢迎来到 BLUEDREAMSTAR!</h1>
+			<p>这里还是什么都没有......</p>
+			<p><a class="btn btn-primary btn-lg" href="javascript:void(0)" role="button" onclick="alert('啥都没有哈！');">点一下</a></p>
+		</div>
+	</div>
+</body>
+</html>

@@ -3,7 +3,7 @@
 	<display-name>BlueDreamStar</display-name>
 
 	<welcome-file-list>
-		<welcome-file>/WEB-INF/PAGE/index.jsp</welcome-file>
+		<welcome-file>/WEB-INF/PAGE/index.html</welcome-file>
 	</welcome-file-list>
 	
 	<servlet>

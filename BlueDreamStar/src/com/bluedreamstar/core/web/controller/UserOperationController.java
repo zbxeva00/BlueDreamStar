@@ -77,4 +77,39 @@ public class UserOperationController {
 		ajaxMap.put("loginMessage", loginMessage);
 		return ajaxMap;
 	}
+	
+	/**
+	 * 验证session是否存在
+	 * @param request
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping(value="/userOperationController_sessionValidation.do",method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> sessionValidation(HttpServletRequest request, Map<String, Object>map) {
+		Map<String, Object> ajaxMap = new HashMap<String, Object>();
+		String sessionValidationFlag = "false";
+		String userNickName = "";
+		if (request.getSession().getAttribute("usersession") != null) {
+			sessionValidationFlag = "true";
+			userNickName = ((UserBasisMessagePo)request.getSession().getAttribute("usersession")).getNickName();
+		}
+		ajaxMap.put("sessionValidationFlag", sessionValidationFlag);
+		ajaxMap.put("userNickName", userNickName);
+		return ajaxMap;
+	}
+	
+	/**
+	 * 登出操作
+	 * @param request
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/userOperationController_userLogout.do",method=RequestMethod.GET)
+	public String userLogout(HttpServletRequest request, Map<String, Object>map) throws Exception{
+		request.getSession().setAttribute("usersession", null);
+		return "/index";
+	}
+	
 }

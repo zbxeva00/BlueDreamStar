@@ -23,7 +23,7 @@
 	<!-- 视图解析器：定义跳转的文件的前后缀(JSP) -->
 	<bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/PAGE/" />
-		<property name="suffix" value=".jsp" />
+		<property name="suffix" value=".html" />
 	</bean>
 	
 	<!-- 配置json -->

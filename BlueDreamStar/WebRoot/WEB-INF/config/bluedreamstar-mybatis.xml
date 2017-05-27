@@ -38,7 +38,7 @@
 		<!-- 最小空闲值.当空闲的连接数少于阀值时，连接池就会预申请去一些连接，以免洪峰来时来不及申请 -->
 		<property name="minIdle" value="10" />
 		<!--#给出一条简单的sql语句进行验证 -->
-		<property name="validationQuery" value="select getdate()" />
+		<property name="validationQuery" value="${validationQuery}" />
 		<!--#在取出连接时进行有效验证 -->
 		<property name="removeAbandonedTimeout" value="120" />
 		<property name="removeAbandoned" value="true" />
